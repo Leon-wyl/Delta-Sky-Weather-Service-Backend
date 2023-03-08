@@ -35,7 +35,7 @@ data "archive_file" "main" {
 resource "aws_lambda_function" "main" {
   filename      = data.archive_file.main.output_path
   function_name = "${var.group_name}_${terraform.workspace}_main" # TODO: change here
-  handler       = "handler.handler"
+  handler       = "scrapper.scrapper"
   runtime       = "python3.9" # TODO: change here
 
   role             = aws_iam_role.iam_for_lambda.arn
