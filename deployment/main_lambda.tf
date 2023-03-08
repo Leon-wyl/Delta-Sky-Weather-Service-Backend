@@ -41,11 +41,11 @@ resource "aws_lambda_function" "main" {
   role             = aws_iam_role.iam_for_lambda.arn
   source_code_hash = data.archive_file.main.output_base64sha256 # TODO: change here
 
-  # environment {
-  #   variables = {
-  #     VARIABLE_NAME = VARIABLE_VALUE
-  #   }
-  # }
+  environment {
+    variables = {
+      GLOBAL_S3_NAME = "${var.global_s3_name}"
+    }
+  }
 }
 
 # Work as a template
