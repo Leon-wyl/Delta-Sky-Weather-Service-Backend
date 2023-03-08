@@ -4,7 +4,7 @@
 
 # Tells Terraform to run build.sh when any of these file below changed
 # - path.module is the location of this .tf file
-resource "null_resource" "build_scheduled" {
+resource "null_resource" "build_main" {
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -22,7 +22,7 @@ data "archive_file" "scheduled" {
   source_dir  = "${path.module}/../code/scheduled"     # TODO: change here
 
   depends_on = [
-    null_resource.build_scheduled # TODO: change here
+    null_resource.build_main # TODO: change here
   ]
 }
 
