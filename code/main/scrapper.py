@@ -51,9 +51,9 @@ def upload_to_s3(data):
             Body=data
         )
         print('SUCESS: uploaded successfully')
-
     except Exception as e:
         print('[ERROR] Upload Failed!')
+        print(e)
 
   
 def scrapper(event, context):
