@@ -51,7 +51,7 @@ resource "aws_iam_policy" "list_s3_permission" {
   })
 }
 
-resource "aws_iampolicy" "put_s3_permissions" {
+resource "aws_iam_policy" "put_s3_permissions" {
   name = "SENG3011_${var.group_name}_${terraform.workspace}_put_s3_permission"
 
   policy = jsonencode(
