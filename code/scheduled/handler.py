@@ -1,6 +1,5 @@
-import json, os
 from datetime import datetime
-import boto3
+
 
 def handler(event, context):
     print("Scheduled function is called")

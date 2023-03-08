@@ -1,5 +1,7 @@
-import json, os
+import json
+import os
 import boto3
+
 
 def handler(event, context):
     print("This is a log")
