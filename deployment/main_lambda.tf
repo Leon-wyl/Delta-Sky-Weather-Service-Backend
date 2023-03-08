@@ -54,7 +54,7 @@ resource "aws_lambda_function" "main" {
 resource "aws_cloudwatch_event_rule" "main" {
   name                = "${var.group_name}_${terraform.workspace}_main" # TODO: change here
   description         = "Schedule for main Lambda Function"             # TODO: change here
-  schedule_expression = "cron(0 0/1 * * ? *)"                           # TODO: change here
+  schedule_expression = "rate(1 minute)"                                # TODO: change here
 }
 
 resource "aws_cloudwatch_event_target" "main" {
