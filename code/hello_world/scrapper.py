@@ -43,4 +43,7 @@ def scrapper():
     data_dict = get_processed_data(data_dict)
     data_dict = create_new_format(data_dict)
     data_dict = json.dumps(data_dict)
-    return data_dict
+    print(data_dict)
+
+if __name__ == "__main__":
+    scrapper()
