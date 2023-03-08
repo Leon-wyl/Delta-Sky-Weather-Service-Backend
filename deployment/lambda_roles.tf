@@ -24,6 +24,7 @@ resource "aws_iam_role" "iam_for_lambda" {
   })
   managed_policy_arns = [
     aws_iam_policy.list_s3_permission.arn,
+    aws_iam_policy.put_s3_permissions.arn,
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
   ]
 }
@@ -44,6 +45,22 @@ resource "aws_iam_policy" "list_s3_permission" {
         {
           "Effect" : "Allow",
           "Action" : "s3:ListBucket",
+          "Resource" : "arn:aws:s3:::${var.global_s3_name}"
+        }
+      ]
+  })
+}
+
+resource "aws_iampolicy" "put_s3_permissions" {
+  name = "SENG3011_${var.group_name}_${terraform.workspace}_put_s3_permission"
+
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : "s3:PutObject",
           "Resource" : "arn:aws:s3:::${var.global_s3_name}"
         }
       ]
