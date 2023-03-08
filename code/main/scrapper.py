@@ -42,14 +42,17 @@ def get_processed_data(data_dict):
 
 def upload_to_s3(data):
     client = boto3.client('s3')
+    dt = datetime.datetime.now()
+    ts = int(datetime.datetime.timestamp(dt))
     try:
         bucket = os.getenv("GLOBAL_S3_NAME")
         print('[BUCKET]', bucket)
         client.put_object(
             Bucket=bucket,
-            Key='F14A_DELTA',
+            Key=f'F14A_DELTA-{ts}',
             Body=data
         )
+
         print('SUCESS: uploaded successfully')
     except Exception as e:
         print('[ERROR] Upload Failed!')
