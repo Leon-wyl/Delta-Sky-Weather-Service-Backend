@@ -61,7 +61,7 @@ resource "aws_iam_policy" "put_s3_permissions" {
         {
           "Effect" : "Allow",
           "Action" : "s3:PutObject",
-          "Resource" : "arn:aws:s3:::${var.global_s3_name}"
+          "Resource" : "arn:aws:s3:::${var.global_s3_name}/*"
         }
       ]
   })
