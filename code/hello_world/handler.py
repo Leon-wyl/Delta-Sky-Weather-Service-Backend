@@ -5,6 +5,7 @@ import json
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
 
+
 def handler(event, context):
     print("Hello World")
     try:
