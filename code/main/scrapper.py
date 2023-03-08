@@ -44,6 +44,7 @@ def upload_to_s3(data):
     client = boto3.client('s3')
     try:
         bucket = os.getenv("GLOBAL_S3_NAME")
+        print('[BUCKET]', bucket)
         client.put_object(
             Bucket=bucket,
             Key='F14A_DELTA',
