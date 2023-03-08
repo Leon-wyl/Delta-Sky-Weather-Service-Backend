@@ -38,7 +38,7 @@ def get_processed_data(data_dict):
         object.update(filtered)
     return data_dict
     
-def scrapper():
+def scrapper(event, context):
     response = requests.get('http://reg.bom.gov.au/fwo/IDN60901/IDN60901.94768.json')
     bytes = response.content
     data_string = bytes.decode('utf8').replace("'", '"')
