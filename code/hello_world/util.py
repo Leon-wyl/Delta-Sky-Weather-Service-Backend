@@ -42,4 +42,5 @@ def scrapper():
     data_dict = json.loads(data_string)
     data_dict = get_processed_data(data_dict)
     data_dict = create_new_format(data_dict)
+    data_dict = json.dumps(data_dict)
     print(data_dict)
