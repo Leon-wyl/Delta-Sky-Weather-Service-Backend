@@ -2,8 +2,10 @@ import sys
 sys.path.insert(0, 'package/')
 
 import requests
+import os
 import json
 import datetime
+import boto3
 
 def create_new_format(data_dict):
     return_dict = {}
@@ -37,7 +39,22 @@ def get_processed_data(data_dict):
         object.clear()
         object.update(filtered)
     return data_dict
-    
+
+def upload_to_s3(data):
+    client = boto3.client('s3')
+    try:
+        bucket = os.getenv("GLOBAL_S3_NAME")
+        client.put_object(
+            Bucket=bucket,
+            Key='F14A_DELTA',
+            Body=data
+        )
+        print('SUCESS: uploaded successfully')
+
+    except Exception as e:
+        print('[ERROR] Upload Failed!')
+
+  
 def scrapper(event, context):
     response = requests.get('http://reg.bom.gov.au/fwo/IDN60901/IDN60901.94768.json')
     bytes = response.content
@@ -45,8 +62,9 @@ def scrapper(event, context):
     data_dict = json.loads(data_string)
     data_dict = get_processed_data(data_dict)
     data_dict = create_new_format(data_dict)
-    data_dict = json.dumps(data_dict)
-    print(data_dict)
+    data = json.dumps(data_dict)
+    upload_to_s3(data)
+    # print(data)
 
 if __name__ == "__main__":
-    scrapper()
+    scrapper('hi', 'what')
