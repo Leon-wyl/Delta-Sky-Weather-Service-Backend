@@ -41,7 +41,6 @@ def get_weather_data(return_dict):
     wmo_list = [(station['WMO'], station['State']) for station in stations]
 
     for wmo in wmo_list:
-        print(wmo)
         id = get_state_id(wmo[1], state_id_list)
         response = requests.get(f"http://reg.bom.gov.au/fwo/{id}60901/{id}60901.{wmo[0]}.json")
 
