@@ -30,5 +30,5 @@ stateId = [
     {
         "State": "WA",
         "ID": "IDW"
-    }   
+    }
 ]
