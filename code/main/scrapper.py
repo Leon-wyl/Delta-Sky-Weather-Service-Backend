@@ -1,4 +1,5 @@
 from stations import stations
+from stateId import stateId
 import requests
 import os
 import json
@@ -31,18 +32,26 @@ def get_processed_data(data_dict):
     return data_dict
 
 
+def get_state_id(state_code, state_id_list):
+    return state_id_list[f"{state_code}"]
+
+
 def get_weather_data(return_dict):
-    for station_object in stations:
-        if station_object['State'] == 'NSW':
-            wmo = station_object['WMO']
-            response = requests.get('http://reg.bom.gov.au/fwo/IDN60901/IDN60901.' + str(wmo) + '.json', timeout=50)
-            print(wmo)
-            if response and response.ok:
-                byte_object = response.content
-                data_string = byte_object.decode('utf8').replace("'", '"')
-                data_dict = json.loads(data_string)
-                data_dict = get_processed_data(data_dict)
-                return_dict['events'].append(data_dict['observations']['data'])
+    state_id_list = {item["State"]: item["ID"] for item in stateId}
+    wmo_list = [(station['WMO'], station['State']) for station in stations]
+
+    for wmo in wmo_list:
+        print(wmo)
+        id = get_state_id(wmo[1], state_id_list)
+        response = requests.get(f"http://reg.bom.gov.au/fwo/{id}60901/{id}60901.{wmo[0]}.json")
+
+        if response.status_code != 200:
+            continue
+        byte_object = response.content
+        data_string = byte_object.decode('utf8').replace("'", '"')
+        data_dict = json.loads(data_string)
+        data_dict = get_processed_data(data_dict)
+        return_dict['events'].append(data_dict['observations']['data'])
     return return_dict
 
 
