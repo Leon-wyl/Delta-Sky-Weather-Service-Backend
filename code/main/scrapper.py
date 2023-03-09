@@ -1,3 +1,4 @@
+from stations import stations
 import requests
 import os
 import json
@@ -7,7 +8,7 @@ import sys
 sys.path.insert(0, 'package/')
 
 
-def create_new_format(data_dict):
+def create_new_format():
     return_dict = {}
     return_dict['datasource'] = "Australian Government Bureau of Meteorology"
     return_dict['dataset_type'] = "weather_info"
@@ -18,19 +19,7 @@ def create_new_format(data_dict):
         "timestamp": now,
         "timezone": timezone,
     }
-    events_list = []
-    for item in data_dict['observations']['data']:
-        event_object = {}
-        event_object['time_object'] = {
-            "timestamp": now,
-            "duration": 1,
-            "duration_unit": "second",
-            "timezone": timezone,
-        }
-        event_object['event_type'] = "weather data"
-        event_object['attribute'] = item
-        events_list.append(item)
-    return_dict['events'] = events_list
+    return_dict['events'] = []
     return return_dict
 
 
@@ -40,6 +29,21 @@ def get_processed_data(data_dict):
         object.clear()
         object.update(filtered)
     return data_dict
+
+
+def get_weather_data(return_dict):
+    for station_object in stations:
+        if station_object['State'] == 'NSW':
+            wmo = station_object['WMO']
+            response = requests.get('http://reg.bom.gov.au/fwo/IDN60901/IDN60901.' + str(wmo) + '.json', timeout=50)
+            print(wmo)
+            if response and response.ok:
+                byte_object = response.content
+                data_string = byte_object.decode('utf8').replace("'", '"')
+                data_dict = json.loads(data_string)
+                data_dict = get_processed_data(data_dict)
+                return_dict['events'].append(data_dict['observations']['data'])
+    return return_dict
 
 
 def upload_to_s3(data):
@@ -62,13 +66,9 @@ def upload_to_s3(data):
 
 
 def scrapper(event, context):
-    response = requests.get('http://reg.bom.gov.au/fwo/IDN60901/IDN60901.94768.json')
-    bytes = response.content
-    data_string = bytes.decode('utf8').replace("'", '"')
-    data_dict = json.loads(data_string)
-    data_dict = get_processed_data(data_dict)
-    data_dict = create_new_format(data_dict)
-    data = json.dumps(data_dict)
+    return_dict = create_new_format()
+    return_dict = get_weather_data(return_dict)
+    data = json.dumps(return_dict)
     upload_to_s3(data)
     # print(data)
 
