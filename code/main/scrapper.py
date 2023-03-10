@@ -1,3 +1,5 @@
+sys.path.insert(0, 'package/')
+
 from stations import stations
 from stateId import stateId
 import requests
@@ -6,7 +8,6 @@ import json
 import datetime
 import boto3
 import sys
-sys.path.insert(0, 'package/')
 
 
 def create_new_format():
