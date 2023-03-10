@@ -1,3 +1,4 @@
+import sys
 sys.path.insert(0, 'package/')
 
 from stations import stations
@@ -7,7 +8,7 @@ import os
 import json
 import datetime
 import boto3
-import sys
+
 
 
 def create_new_format():
