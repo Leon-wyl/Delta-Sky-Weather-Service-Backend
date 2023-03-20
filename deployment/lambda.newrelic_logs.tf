@@ -10,13 +10,13 @@ module "newrelic_log_ingestion" {
 
 # This resource configures when the lambda function is triggered
 resource "aws_cloudwatch_event_rule" "newrelic_log_ingestion" {
-  name                = "${var.group_name}_${terraform.workspace}_newrelic_log_ingestion"
+  name                = "${var.group_name}_${terraform.workspace}_main_newrelic_log_ingestion"
   description         = "Schedule for NewRelic Log-Ingestion Lambda Function"            
   schedule_expression = "rate(5 minutes)"                              
 }
 
 resource "aws_cloudwatch_event_target" "newrelic_log_ingestion" {
-  rule      = aws_cloudwatch_event_rule.newrelic_log_ingestion.name
+  rule      = aws_cloudwatch_event_rule.main_newrelic_log_ingestion.name
   target_id = "${var.group_name}_${terraform.workspace}_scheduled" # TODO: change here
   arn       = aws_lambda_function.newrelic_log_ingestion.arn                         # TODO: change here
 }
@@ -25,7 +25,7 @@ resource "aws_cloudwatch_event_target" "newrelic_log_ingestion" {
 resource "aws_lambda_permission" "newrelic_log_ingestion" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.newrelic_log_ingestion.function_name # TODO: change here
+  function_name = aws_lambda_function.main_newrelic_log_ingestion.function_name # TODO: change here
   principal     = "events.amazonaws.com"
 }
 
