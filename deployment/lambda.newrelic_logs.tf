@@ -31,7 +31,7 @@ resource "aws_lambda_permission" "newrelic_log_ingestion" {
 
 # Including this resource will keep a log as your function being called
 resource "aws_cloudwatch_log_group" "newrelic_log_ingestion_log" {
-  name              = "/aws/lambda/SENG3011${aws_lambda_function.main_newrelic_log_ingestion.function_name}" # TODO: change here
+  name              = "/aws/lambda/SENG3011_F14A_DELTA_dev_main_newrelic_log_ingestion" # TODO: change here
   retention_in_days = 7
   lifecycle {
     prevent_destroy = false
