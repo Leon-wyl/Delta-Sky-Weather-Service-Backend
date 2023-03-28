@@ -13,7 +13,7 @@ resource "aws_iam_role" "iam_for_new_relic" {
           Effect = "Allow",
           Condition = {
             StringEquals = {
-              "sts:ExternalId" = "1004759723" # TODO: CHANGE THIS TO YOUR NEW RELIC ID
+              "sts:ExternalId" = "3850493 " # TODO: CHANGE THIS TO YOUR NEW RELIC ID
             }
           }
         }
