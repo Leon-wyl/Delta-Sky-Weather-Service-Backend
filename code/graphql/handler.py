@@ -20,7 +20,7 @@ def handler(event, context):
     try:
         return {
             "statusCode": 200,
-            "body": json.dumps(res),
+            "body": json.dumps(res.data),
             "headers": {
                 "Content-Type": "application/json",
             },
