@@ -35,7 +35,7 @@ class Dataset(ObjectType):
 
 
 class Query(ObjectType):
-    objects = List(String())
+    objects = List(String)
 
     def resolve_objects(root, info):
         s3 = boto3.client('s3')
