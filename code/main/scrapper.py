@@ -10,9 +10,6 @@ import datetime
 import boto3
 import newrelic.agent
 
-newrelic.agent.initialize('./newrelic.ini')
-NR_key = "NRAK-7FY4I37ISXM8YMBSMW0WVJKFDGL"
-
 @newrelic.agent.background_task
 def create_new_format():
     return_dict = {}
@@ -79,6 +76,8 @@ def upload_to_s3(data):
 
 
 def scrapper(event, context):
+    newrelic.agent.initialize('./newrelic.ini')
+    NR_key = "NRAK-7FY4I37ISXM8YMBSMW0WVJKFDGL"
     return_dict = create_new_format()
     return_dict = get_weather_data(return_dict)
     data = json.dumps(return_dict)
