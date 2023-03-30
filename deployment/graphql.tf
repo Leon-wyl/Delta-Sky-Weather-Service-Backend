@@ -6,7 +6,9 @@
 # - path.module is the location of this .tf file
 resource "null_resource" "build_graphql" {
   triggers = {
-    always_run = "${timestamp()}"
+    handler      = base64sha256(file("${path.module}/../src/graphql/handler.py"))
+    requirements = base64sha256(file("${path.module}/../src/graphql/requirements.txt"))
+    build        = base64sha256(file("${path.module}/../src/graphql/build.sh"))
   }
 
   provisioner "local-exec" {
