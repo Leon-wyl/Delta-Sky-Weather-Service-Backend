@@ -1,10 +1,11 @@
 import sys
 sys.path.insert(0, "package/")
 
-import os
-import json
-import boto3
-from graphene import ObjectType, Field, String, Int, List, Schema
+if True:
+    import os
+    import json
+    import boto3
+    from graphene import ObjectType, Field, String, Int, List, Schema
 
 class DatasetTimeObject(ObjectType):
     timestamp: String()
