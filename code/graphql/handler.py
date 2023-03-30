@@ -19,13 +19,13 @@ def handler(event, context):
     try:
         return {
             "statusCode": 200,
-            "body": json.dumps({'keys': keys}),
+            "body": json.dumps(res),
             "headers": {
                 "Content-Type": "application/json",
             },
         }
     except Exception as e:
-        LOGGER.error(f"Grpahql api error: {e}")
+        LOGGER.error(f"Graphql api error: {e}")
         return {
             "statusCode": 500,
             "body": json.dumps({'message': "Something went wrong :("}),
