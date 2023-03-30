@@ -9,6 +9,17 @@ import os
 import json
 import datetime
 import boto3
+from flagbase import FlagbaseClient, Config, Identity
+
+
+
+flagbase = FlagbaseClient(
+    config=Config(
+        server_key="sdk-server_b68468aa-9ea3-4dae-82a6-68d23ee1f505"
+    )
+)
+user = Identity("all", {})
+
 
 @newrelic.agent.background_task(name='Create Data Format', group='Data Creation')
 def create_new_format():
