@@ -1,16 +1,22 @@
-import json
-import os
-import boto3
+import sys
+sys.path.insert(0, 'package/')
 
+import json
+import logging
+from schema import schema
+
+LOGGER = logging.getLogger()
+LOGGER.setLevel(logging.INFO)
 
 def handler(event, context):
-    print("This is a log")
-    if os.getenv("ENV"):
-        print("ENV =", os.getenv)
-    s3 = boto3.client('s3')
+    headers = event.headers
+    query = json.loads(event.body.query)
+
+    # call the schema
+    res = schema.execute(query)
+
+    # return the output
     try:
-        contents = s3.list_objects(Bucket=os.getenv("GLOBAL_S3_NAME"))
-        keys = [item['Key'] for item in contents['Contents']]
         return {
             "statusCode": 200,
             "body": json.dumps({'keys': keys}),
@@ -19,7 +25,7 @@ def handler(event, context):
             },
         }
     except Exception as e:
-        print(str(e))
+        LOGGER.error(f"Grpahql api error: {e}")
         return {
             "statusCode": 500,
             "body": json.dumps({'message': "Something went wrong :("}),

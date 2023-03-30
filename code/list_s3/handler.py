@@ -2,7 +2,6 @@ import json
 import os
 import boto3
 
-
 def handler(event, context):
     print("This is a log")
     if os.getenv("ENV"):
