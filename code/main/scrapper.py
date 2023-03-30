@@ -78,7 +78,7 @@ def upload_to_s3(data):
 
 @newrelic.agent.lambda_handler()
 def scrapper(event, context):
-    newrelic.agent.initialize('./newrelic.ini')
+    newrelic.agent.initialize()
     NR_key = "NRAK-7FY4I37ISXM8YMBSMW0WVJKFDGL"
     return_dict = create_new_format()
     return_dict = get_weather_data(return_dict)
