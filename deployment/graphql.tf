@@ -61,7 +61,7 @@ resource "aws_lambda_permission" "graphql" {
   function_name = aws_lambda_function.graphql.function_name # TODO: change here
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${data.aws_apigatewayv2_api.api_gateway_global.execution_arn}/*/*/s3" # TODO: change here
+  source_arn = "${data.aws_apigatewayv2_api.api_gateway_global.execution_arn}/*/*/graphql" # TODO: change here
 }
 
 # This bridges the route on the gateway and your function(or other resources).
