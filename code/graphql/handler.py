@@ -9,10 +9,10 @@ LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
 
 def handler(event, context):
-    headers = event.headers
+    # headers = event.headers
     query = json.loads(event.body.query)
     print(query)
-    
+
     # call the schema
     res = schema.execute(query)
 
