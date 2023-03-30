@@ -8,9 +8,12 @@ import os
 import json
 import datetime
 import boto3
+import newrelic.agent
 
+newrelic.agent.initialize('./newrelic.ini')
+NR_key = "NRAK-7FY4I37ISXM8YMBSMW0WVJKFDGL"
 
-
+@newrelic.agent.background_task
 def create_new_format():
     return_dict = {}
     return_dict['datasource'] = "Australian Government Bureau of Meteorology"
@@ -25,7 +28,7 @@ def create_new_format():
     return_dict['events'] = []
     return return_dict
 
-
+@newrelic.agent.background_task
 def get_processed_data(data_dict):
     for object in data_dict['observations']['data']:
         filtered = {k: v for k, v in object.items() if v is not None and v != '-'}
@@ -33,11 +36,11 @@ def get_processed_data(data_dict):
         object.update(filtered)
     return data_dict
 
-
+@newrelic.agent.background_task
 def get_state_id(state_code, state_id_list):
     return state_id_list[f"{state_code}"]
 
-
+@newrelic.agent.web_transaction()
 def get_weather_data(return_dict):
     state_id_list = {item["State"]: item["ID"] for item in stateId}
     wmo_list = [(station['WMO'], station['State']) for station in stations]
@@ -55,7 +58,7 @@ def get_weather_data(return_dict):
         return_dict['events'].append(data_dict['observations']['data'])
     return return_dict
 
-
+@newrelic.agent.web_transaction()
 def upload_to_s3(data):
     client = boto3.client('s3')
     dt = datetime.datetime.now()
