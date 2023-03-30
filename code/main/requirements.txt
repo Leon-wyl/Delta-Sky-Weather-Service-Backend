@@ -1,4 +1,4 @@
 requests==2.28.2
 boto3
-newrelic
+newrelic==8.7.1
 flagbase
