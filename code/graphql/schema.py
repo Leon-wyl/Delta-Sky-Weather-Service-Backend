@@ -3,7 +3,7 @@ sys.path.insert(0, "package/")
 
 if True:
     import os
-    import json
+    # import json
     import boto3
     from graphene import ObjectType, Field, String, Int, List, Schema
 
@@ -42,7 +42,7 @@ class Datafile(ObjectType):
 
     def resolve_contents():
         obj = s3.get_object(Bucket=os.getenv("GLOBAL_S3_NAME"), key="ANZ_2022-06-01_2023-01-01.json")
-        return json.loads(obj['Body'].read())
+        return obj['Body'].read()
 
 class Query(ObjectType):
     all_objects = List(String)
