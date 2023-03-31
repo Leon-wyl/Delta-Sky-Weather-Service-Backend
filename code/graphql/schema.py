@@ -60,7 +60,7 @@ class Query(ObjectType):
         s3 = boto3.client('s3')
         obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), Key=file)
         print("returning dataset")
-        return json.dumps(obj)
+        return json.dumps(obj, indent=4, default=str)
      
 
 schema = Schema(query=Query)
