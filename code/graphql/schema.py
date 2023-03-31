@@ -31,7 +31,7 @@ class Dataset(ObjectType):
     dataset_type = String()
     dataset_id = String()
     time_object = Field(DatasetTimeObject)
-    events = List(Event, )
+    events = List(Event)
 
 class Datafile(ObjectType):
     key = String(required=True)
@@ -45,7 +45,8 @@ class Datafile(ObjectType):
 
 class Query(ObjectType):
     all_objects = List(String)
-    objects = List(Datafile)
+    get_object = String(file=String(default_value="F14A_DELTA"))
+    #get_object = Dataset(file=String(default_value="F14A_DELTA"))
 
     def resolve_all_objects(root, info):
         s3 = boto3.client('s3')
@@ -53,6 +54,12 @@ class Query(ObjectType):
         keys = [item['Key'] for item in contents['Contents']]
         print(f"Returning keys {keys}")
         return keys
+    
+    def resolve_get_object(root, info, file):
+        s3 = boto3.client('s3')
+        obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), key=file)
+        print("returning dataset")
+        return "success"
      
 
 schema = Schema(query=Query)
