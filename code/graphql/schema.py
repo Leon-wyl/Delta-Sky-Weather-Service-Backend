@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, "package/")
+sys.path.insert(0, 'package/')
 
 if True:
     import os
@@ -33,6 +33,14 @@ class Dataset(ObjectType):
     time_object: Field(DatasetTimeObject)
     events: List(Event, )
 
+class Datafile(ObjectType):
+    key = String()
+    contents = String()
+
+    def resolve_contents():
+        s3 = boto3.client('s3')
+        obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), key="ANZ_2022-06-01_2023-01-01.json")
+        return obj['Body'].read()
 
 class Query(ObjectType):
     objects = List(String)
