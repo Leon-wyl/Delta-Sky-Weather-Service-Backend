@@ -50,7 +50,7 @@ class Query(ObjectType):
     get_object = String(file=String(default_value="F14A_DELTA"))
     #get_object = Dataset(file=String(default_value="F14A_DELTA"))
     upload_object = Field(String(), key=String(required=True), value=String(required=True))
-    weather = Field(JSONString(), state_id=String(), wmo=String())
+    weather = Field(String(), state_id=String(), wmo=String())
 
     def resolve_all_objects(root, info):
         s3 = boto3.client('s3')
