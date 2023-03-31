@@ -3,6 +3,7 @@ sys.path.insert(0, 'package/')
 
 if True:
     import os
+    import json
     import boto3
     from graphene import ObjectType, Field, String, Int, List, Schema
 
@@ -59,7 +60,7 @@ class Query(ObjectType):
         s3 = boto3.client('s3')
         obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), Key=file)
         print("returning dataset")
-        return "success"
+        return json.dumps(obj)
      
 
 schema = Schema(query=Query)
