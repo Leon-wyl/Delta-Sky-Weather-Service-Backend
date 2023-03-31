@@ -41,7 +41,7 @@ class Datafile(ObjectType):
         s3 = boto3.client('s3')
         # obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), key="ANZ_2022-06-01_2023-01-01.json")
         # return obj['Body'].read().decode('utf-8)
-        return 'hi'
+        return {"res": "hi"}
 
 class Query(ObjectType):
     all_objects = List(String)
@@ -51,6 +51,7 @@ class Query(ObjectType):
         s3 = boto3.client('s3')
         contents = s3.list_objects(Bucket=os.getenv("GLOBAL_S3_NAME"))
         keys = [item['Key'] for item in contents['Contents']]
+        print(f"Returning keys {keys}")
         return keys
      
 

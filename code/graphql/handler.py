@@ -15,6 +15,8 @@ def handler(event, context):
     # call the schema
     res = schema.execute(query)
 
+    print(f"result of schema:{res}")
+
     # return the output
     try:
         return {
