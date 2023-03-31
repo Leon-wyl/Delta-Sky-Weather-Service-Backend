@@ -38,6 +38,11 @@ def create_new_format():
 
 @newrelic.agent.background_task(name='Remove Null Entries', group='Data Cleaning')
 def get_processed_data(data_dict):
+    raw_data = flagbase.variation("s3-process-data-service", user, "control") == "treatment"
+
+    if raw_data:
+        return data_dict
+
     for object in data_dict['observations']['data']:
         filtered = {k: v for k, v in object.items() if v is not None and v != '-'}
         object.clear()
