@@ -2,11 +2,11 @@ import datetime
 import sys
 sys.path.insert(0, 'package/')
 
-if True:
-    import os
-    import json
-    import boto3
-    from graphene import ObjectType, Field, String, Int, List, Schema
+import os
+import json
+import boto3
+from graphene import ObjectType, Field, String, Int, List, Schema, JSONString
+import requests
 
 class DatasetTimeObject(ObjectType):
     timestamp = String()
@@ -50,6 +50,7 @@ class Query(ObjectType):
     get_object = String(file=String(default_value="F14A_DELTA"))
     #get_object = Dataset(file=String(default_value="F14A_DELTA"))
     upload_object = Field(String(), key=String(required=True), value=String(required=True))
+    weather = Field(JSONString(), state_id=String(), wmo=String())
 
     def resolve_all_objects(root, info):
         s3 = boto3.client('s3')
@@ -82,6 +83,12 @@ class Query(ObjectType):
         except Exception as e:
             print('[ERROR] Upload Failed!')
             print(e)
+
+    def resolve_weather(root, info, state_id, wmo):
+        response = requests.get(f"http://reg.bom.gov.au/fwo/{state_id}60901/{state_id}60901.{wmo}.json")
+        byte_object = response.content
+        return byte_object.decode('utf8').replace("'", '"')
+
      
 
 schema = Schema(query=Query)
