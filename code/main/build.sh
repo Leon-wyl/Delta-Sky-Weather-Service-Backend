@@ -5,5 +5,4 @@
 # Install dependencies
 cd `dirname $0`
 pip install -r requirements.txt -t ./package/
-cd `dirname $0`
-source ./nr_script.sh
+source ../../nr_script.sh
