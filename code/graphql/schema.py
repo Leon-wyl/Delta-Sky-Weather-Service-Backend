@@ -5,7 +5,6 @@ if True:
     import os
     import boto3
     from graphene import ObjectType, Field, String, Int, List, Schema
-    import json
 
 s3 = boto3.client('s3')
 
@@ -42,7 +41,7 @@ class Datafile(ObjectType):
 
     def resolve_contents():
         obj = s3.get_object(Bucket=os.getenv("GLOBAL_S3_NAME"), key="ANZ_2022-06-01_2023-01-01.json")
-        return json.dumps(obj['Body'].read())
+        return obj['Body'].read()
 
 class Query(ObjectType):
     all_objects = List(String)
