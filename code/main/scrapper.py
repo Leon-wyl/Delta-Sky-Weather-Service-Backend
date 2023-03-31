@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, 'package/')
 
+import newrelic.agent
 from stations import stations
 from stateId import stateId
 import requests
@@ -8,9 +9,19 @@ import os
 import json
 import datetime
 import boto3
+from flagbase import FlagbaseClient, Config, Identity
 
 
 
+flagbase = FlagbaseClient(
+    config=Config(
+        server_key="sdk-server_b68468aa-9ea3-4dae-82a6-68d23ee1f505"
+    )
+)
+user = Identity("all", {})
+
+
+@newrelic.agent.background_task(name='Create Data Format', group='Data Creation')
 def create_new_format():
     return_dict = {}
     return_dict['datasource'] = "Australian Government Bureau of Meteorology"
@@ -25,19 +36,24 @@ def create_new_format():
     return_dict['events'] = []
     return return_dict
 
-
+@newrelic.agent.background_task(name='Remove Null Entries', group='Data Cleaning')
 def get_processed_data(data_dict):
+    raw_data = flagbase.variation("s3-process-data-service", user, "control") == "treatment"
+
+    if raw_data:
+        return data_dict
+
     for object in data_dict['observations']['data']:
         filtered = {k: v for k, v in object.items() if v is not None and v != '-'}
         object.clear()
         object.update(filtered)
     return data_dict
 
-
+@newrelic.agent.background_task(name='Remove Null Entries', group='Data Cleaning')
 def get_state_id(state_code, state_id_list):
     return state_id_list[f"{state_code}"]
 
-
+@newrelic.agent.web_transaction(name='Retrieve Data from BOM', group='BOM Requests')
 def get_weather_data(return_dict):
     state_id_list = {item["State"]: item["ID"] for item in stateId}
     wmo_list = [(station['WMO'], station['State']) for station in stations]
@@ -55,7 +71,7 @@ def get_weather_data(return_dict):
         return_dict['events'].append(data_dict['observations']['data'])
     return return_dict
 
-
+@newrelic.agent.web_transaction(name='Upload to Data Lake', group='Upload Data')
 def upload_to_s3(data):
     client = boto3.client('s3')
     dt = datetime.datetime.now()
@@ -70,17 +86,21 @@ def upload_to_s3(data):
         )
 
         print('SUCESS: uploaded successfully')
+        newrelic.agent.record_custom_event('Successful S3 Upload', {'Upload to S3':'Success'}, )
     except Exception as e:
         print('[ERROR] Upload Failed!')
+        newrelic.agent.record_custom_event('Failed S3 Upload', {'Upload to S3': e})
         print(e)
 
-
+@newrelic.agent.lambda_handler()
 def scrapper(event, context):
+    newrelic.agent.initialize()
+    NR_key = "NRAK-7FY4I37ISXM8YMBSMW0WVJKFDGL"
     return_dict = create_new_format()
     return_dict = get_weather_data(return_dict)
     data = json.dumps(return_dict)
     upload_to_s3(data)
-    # print(data)
+    newrelic.agent.shutdown_agent(timeout=10)
 
 
 if __name__ == "__main__":
