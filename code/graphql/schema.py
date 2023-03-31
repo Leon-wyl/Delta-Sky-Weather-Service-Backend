@@ -78,6 +78,7 @@ class Query(ObjectType):
             )
 
             print('SUCESS: uploaded successfully')
+            return "success"
         except Exception as e:
             print('[ERROR] Upload Failed!')
             print(e)
