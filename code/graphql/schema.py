@@ -7,31 +7,31 @@ if True:
     from graphene import ObjectType, Field, String, Int, List, Schema
 
 class DatasetTimeObject(ObjectType):
-    timestamp: String()
-    timezone: String()
+    timestamp = String()
+    timezone = String()
 
 class EventTimeObject(ObjectType):
-    timestamp: String()
-    timezone: String()
-    duration: Int()
-    duration_unit: String()
+    timestamp = String()
+    timezone = String()
+    duration = Int()
+    duration_unit = String()
 
 class AttributeObject(ObjectType):
-    key: String()
-    value: String()
+    key = String()
+    value = String()
 
 class Event(ObjectType):
-    time_object: Field(EventTimeObject)
-    event_type: String()
-    attributes: List(AttributeObject)
+    time_object = Field(EventTimeObject)
+    event_type = String()
+    attributes = List(AttributeObject)
 
 
 class Dataset(ObjectType):
-    data_source: String()
-    dataset_type: String()
-    dataset_id: String()
-    time_object: Field(DatasetTimeObject)
-    events: List(Event, )
+    data_source = String()
+    dataset_type = String()
+    dataset_id = String()
+    time_object = Field(DatasetTimeObject)
+    events = List(Event, )
 
 class Datafile(ObjectType):
     key = String()
@@ -39,13 +39,15 @@ class Datafile(ObjectType):
 
     def resolve_contents():
         s3 = boto3.client('s3')
-        obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), key="ANZ_2022-06-01_2023-01-01.json")
-        return obj['Body'].read()
+        # obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), key="ANZ_2022-06-01_2023-01-01.json")
+        # return obj['Body'].read()
+        return 'hi'
 
 class Query(ObjectType):
-    objects = List(String)
+    all_objects = List(String)
+    objects = List(Datafile)
 
-    def resolve_objects(root, info):
+    def resolve_all_objects(root, info):
         s3 = boto3.client('s3')
         contents = s3.list_objects(Bucket=os.getenv("GLOBAL_S3_NAME"))
         keys = [item['Key'] for item in contents['Contents']]
