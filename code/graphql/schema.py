@@ -1,3 +1,4 @@
+import datetime
 import sys
 sys.path.insert(0, 'package/')
 
@@ -48,6 +49,7 @@ class Query(ObjectType):
     all_objects = List(String)
     get_object = String(file=String(default_value="F14A_DELTA"))
     #get_object = Dataset(file=String(default_value="F14A_DELTA"))
+    upload_object = Field(String(), key=String(required=True), value=String(required=True))
 
     def resolve_all_objects(root, info):
         s3 = boto3.client('s3')
@@ -61,6 +63,24 @@ class Query(ObjectType):
         obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), Key=file)
         print("returning dataset")
         return json.dumps(obj['Body'].read().decode('utf-8'), default=str)
+
+    def resolve_upload_object(root, info, key, value):
+        client = boto3.client('s3')
+        dt = datetime.datetime.now()
+        ts = int(datetime.datetime.timestamp(dt))
+        try:
+            bucket = os.getenv("GLOBAL_S3_NAME")
+            print('[BUCKET]', bucket)
+            client.put_object(
+                Bucket=bucket,
+                Key=key,
+                Body=value
+            )
+
+            print('SUCESS: uploaded successfully')
+        except Exception as e:
+            print('[ERROR] Upload Failed!')
+            print(e)
      
 
 schema = Schema(query=Query)
