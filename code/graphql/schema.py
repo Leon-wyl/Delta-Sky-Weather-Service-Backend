@@ -57,7 +57,7 @@ class Query(ObjectType):
     
     def resolve_get_object(root, info, file):
         s3 = boto3.client('s3')
-        obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), key=file)
+        obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), Key=file)
         print("returning dataset")
         return "success"
      
