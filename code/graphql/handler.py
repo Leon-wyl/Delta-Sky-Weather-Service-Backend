@@ -1,24 +1,34 @@
+import sys
+sys.path.insert(0, 'package/')
+
 import json
-import os
-import boto3
+import logging
+from schema import schema
+
+LOGGER = logging.getLogger()
+LOGGER.setLevel(logging.INFO)
 
 def handler(event, context):
-    print("This is a log")
-    if os.getenv("ENV"):
-        print("ENV =", os.getenv)
-    s3 = boto3.client('s3')
+    # headers = event.headers
+    query = json.loads(event["body"])["query"]
+
+    # call the schema
+    res = schema.execute(query)
+
+    print(f"result of schema:{res}")
+
+    # return the output
     try:
-        contents = s3.list_objects(Bucket=os.getenv("GLOBAL_S3_NAME"))
-        keys = [item['Key'] for item in contents['Contents']]
         return {
             "statusCode": 200,
-            "body": json.dumps({'keys': keys}),
+            "body": json.dumps(res.data),
             "headers": {
                 "Content-Type": "application/json",
             },
         }
     except Exception as e:
-        print(str(e))
+        LOGGER.error(f"Graphql api error: {e}")
+        print(e)
         return {
             "statusCode": 500,
             "body": json.dumps({'message': "Something went wrong :("}),
