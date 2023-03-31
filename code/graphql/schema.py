@@ -34,7 +34,7 @@ class Dataset(ObjectType):
     events = List(Event, )
 
 class Datafile(ObjectType):
-    key = String(required)
+    key = String(required=True)
     contents = String()
 
     def resolve_contents():
