@@ -43,8 +43,25 @@ def get_processed_data(data_dict):
     if raw_data:
         return data_dict
 
+    data_dict['observations']['data'] = data_dict['observations']['data'][0:48]
+
     for object in data_dict['observations']['data']:
-        filtered = {k: v for k, v in object.items() if v is not None and v != '-'}
+        filtered = {
+            "wmo": object["wmo"],
+            "name": object["name"],
+            "local_date_time": object["local_date_time_full"],
+            "apparent_temp": object['apparent_t'],
+            "cloud": object['cloud'],
+            "cloud_oktas": object['cloud_oktas'],
+            "gust_kmh": object['gust_kmh'],
+            "air_temp": object['air_temp'],
+            "pressure": object['press'],
+            "rain_trace_since_9am": object['rain_trace'],
+            "rel_humidity": object['rel_hum'],
+            "visibility_km": object['vis_km'],
+            "wind_direction": object['wind_dir'],
+            "wind_speed_kmh": object['wind_spd_kmh'],
+        }
         object.clear()
         object.update(filtered)
     return data_dict
