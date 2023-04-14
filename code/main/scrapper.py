@@ -49,6 +49,8 @@ def get_processed_data(data_dict):
         filtered = {
             "wmo": object["wmo"],
             "name": object["name"],
+            "lat": object["lat"],
+            "lon": object["lon"],
             "local_date_time": object["local_date_time_full"],
             "apparent_temp": object['apparent_t'],
             "cloud": object['cloud'],
