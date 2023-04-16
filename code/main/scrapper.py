@@ -43,7 +43,7 @@ def get_processed_data(data_dict):
     if raw_data:
         return data_dict
 
-    data_dict['observations']['data'] = data_dict['observations']['data'][0:48]
+    data_dict['observations']['data'] = data_dict['observations']['data'][0::4]
 
     for object in data_dict['observations']['data']:
         filtered = {
@@ -87,7 +87,7 @@ def get_weather_data(return_dict):
         data_string = byte_object.decode('utf8').replace("'", '"')
         data_dict = json.loads(data_string)
         data_dict = get_processed_data(data_dict)
-        return_dict['events'].append(data_dict['observations']['data'])
+        return_dict['events'].extend(data_dict['observations']['data'])
     return return_dict
 
 @newrelic.agent.web_transaction(name='Upload to Data Lake', group='Upload Data')
