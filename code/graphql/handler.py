@@ -24,6 +24,9 @@ def handler(event, context):
             "body": json.dumps(res.data),
             "headers": {
                 "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept'
             },
         }
     except Exception as e:
