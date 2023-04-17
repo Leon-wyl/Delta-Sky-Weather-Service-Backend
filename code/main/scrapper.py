@@ -104,6 +104,12 @@ def upload_to_s3(data):
             Body=data
         )
 
+        client.put_object(
+            Bucket=bucket,
+            Key=f'F14A_DELTA_latest',
+            Body=data
+        )
+
         print('SUCESS: uploaded successfully')
         newrelic.agent.record_custom_event('Successful S3 Upload', {'Upload to S3':'Success'}, )
     except Exception as e:
