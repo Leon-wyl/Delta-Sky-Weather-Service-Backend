@@ -123,7 +123,7 @@ def scrapper(event, context):
     NR_key = "NRAK-7FY4I37ISXM8YMBSMW0WVJKFDGL"
     return_dict = create_new_format()
     return_dict = get_weather_data(return_dict)
-    data = json.dumps(return_dict)
+    data = json.dumps(return_dict).encode('utf-8')
     upload_to_s3(data)
     newrelic.agent.shutdown_agent(timeout=10)
 
