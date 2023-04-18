@@ -63,7 +63,7 @@ class Query(ObjectType):
         s3 = boto3.client('s3')
         obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), Key=file)
         print("returning dataset")
-        return obj['Body'].read()
+        return json.loads(obj['Body'].read().decode('utf-8'))
 
     def resolve_upload_object(root, info, key, value):
         client = boto3.client('s3')
