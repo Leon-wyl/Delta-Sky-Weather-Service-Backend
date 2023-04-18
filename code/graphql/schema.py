@@ -5,7 +5,7 @@ sys.path.insert(0, 'package/')
 import os
 import json
 import boto3
-from graphene import ObjectType, Field, String, Int, List, Schema, JSONString
+from graphene import ObjectType, Field, String, Int, Float, List, Schema, JSONString
 import requests
 
 class DatasetTimeObject(ObjectType):
@@ -23,13 +23,30 @@ class AttributeObject(ObjectType):
     value = String()
 
 class Event(ObjectType):
-    time_object = Field(EventTimeObject)
-    event_type = String()
-    attributes = List(AttributeObject)
-
+    sort_order = Int()
+    wmo = Int()
+    name = String()
+    history_product = String()
+    local_date_time = String()
+    local_date_time_full = String()
+    aifstime_utc = String()
+    lat = Float()
+    lon = Float()
+    apparent_t = Float()
+    delta_t = Float()
+    air_temp = Float()
+    dewpt = Float()
+    press = Float()
+    press_qnh = Float()
+    press_msl = Float()
+    rain_trace = Float()
+    rel_hum = Float()
+    wind_dir = Float()
+    wind_spd_kmh = Float()
+    wind_spd_kt = Float()
 
 class Dataset(ObjectType):
-    data_source = String()
+    datasource = String()
     dataset_type = String()
     dataset_id = String()
     time_object = Field(DatasetTimeObject)
@@ -47,7 +64,7 @@ class Datafile(ObjectType):
 
 class Query(ObjectType):
     all_objects = List(String)
-    get_object = String(file=String(default_value="F14A_DELTA"))
+    get_object = Field(Dataset, file=String(default_value="F14A_DELTA"))
     #get_object = Dataset(file=String(default_value="F14A_DELTA"))
     upload_object = Field(String(), key=String(required=True), value=String(required=True))
     weather = Field(String(), state_id=String(), wmo=String())
@@ -63,7 +80,11 @@ class Query(ObjectType):
         s3 = boto3.client('s3')
         obj = s3.get_object(Bucket=os.getenv('GLOBAL_S3_NAME'), Key=file)
         print("returning dataset")
-        return json.loads(obj['Body'].read(), default=str)
+
+        data = json.loads(obj['Body'].read())
+
+        print(data)
+        return data
 
     def resolve_upload_object(root, info, key, value):
         client = boto3.client('s3')

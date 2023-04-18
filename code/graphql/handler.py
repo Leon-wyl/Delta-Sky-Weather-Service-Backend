@@ -24,9 +24,6 @@ def handler(event, context):
             "body": json.dumps(res.data),
             "headers": {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Headers': '*'
             },
         }
     except Exception as e:
@@ -37,8 +34,5 @@ def handler(event, context):
             "body": json.dumps({'message': "Something went wrong :("}),
             "headers": {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Headers': '*'
             },
         }
